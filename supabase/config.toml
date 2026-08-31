@@ -1,0 +1,10 @@
+project_id = "k-student-hub"
+
+[functions.official-answer]
+verify_jwt = true
+
+[functions.moderate-content]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true

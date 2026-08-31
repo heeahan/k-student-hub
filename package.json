@@ -1,0 +1,12 @@
+{
+  "name": "k-student-hub",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "mobile": "pnpm --dir apps/mobile start",
+    "mobile:web": "pnpm --dir apps/mobile web",
+    "export:web": "pnpm --dir apps/mobile export:web",
+    "typecheck": "pnpm --dir apps/mobile typecheck",
+    "lint": "pnpm --dir apps/mobile lint"
+  }
+}
