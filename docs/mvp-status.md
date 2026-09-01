@@ -9,7 +9,8 @@
 - School/all community feed with categories, likes, bookmarks, and seeded content
 - Post creation with audience, anonymity, length limits, and client-side sensitive-data detection
 - Post detail with report and block entry points; blocked authors disappear from the feed
-- Official-info question UI with citations, checklist, no-source state, and 1345 escalation
+- Official-info messenger UI with right/left bubbles, conversation context, source cards, checklist, no-source state, and 1345 escalation
+- Government-source registry plus human-approval, checksum, OpenAI upload, vector indexing, and Supabase metadata pipeline
 - Supabase migration, seed, RLS, account deletion, moderation, and RAG Edge Functions
 - Privacy, community guideline, architecture, source ingestion, setup, and release documents
 - TypeScript check, ESLint check, Expo web export, and mobile-viewport interaction QA

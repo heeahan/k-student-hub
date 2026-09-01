@@ -4,10 +4,11 @@
 
 1. 새 Supabase 프로젝트를 생성합니다.
 2. `supabase/migrations/202608310001_initial_schema.sql`을 적용합니다.
-3. `supabase/seed.sql`을 적용합니다.
-4. 프로젝트 URL과 publishable key를 `apps/mobile/.env`에 입력합니다.
-5. `EXPO_PUBLIC_USE_DEMO_DATA=false`로 변경합니다.
-6. Auth URL 설정에 앱 scheme `kstudenthub://`를 등록합니다.
+3. `supabase/migrations/202609010001_official_info_upgrade.sql`을 적용합니다.
+4. `supabase/seed.sql`을 적용합니다.
+5. 프로젝트 URL과 publishable key를 `apps/mobile/.env`에 입력합니다.
+6. `EXPO_PUBLIC_USE_DEMO_DATA=false`로 변경합니다.
+7. Auth URL 설정에 앱 scheme `kstudenthub://`를 등록합니다.
 
 모바일 앱에 service role key를 넣지 마세요. 모든 exposed table에는 RLS가 켜져 있어야 합니다.
 
@@ -18,8 +19,9 @@
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL`
 - `OPENAI_VECTOR_STORE_ID`
+- `RAG_MIN_SCORE` (선택, 기본값 `0.45`)
 
-공식 출처 원문은 이용허락을 확인한 경우에만 Vector Store에 올립니다. `official_sources.openai_file_id`에 file ID를 저장해야 출처 URL과 연결됩니다.
+`pnpm.cmd sources:check`로 출처 레지스트리를 확인한 뒤, 현행성과 이용허락을 사람이 승인한 문서만 `pnpm.cmd sources:ingest`로 Vector Store에 올립니다. 자세한 절차는 `docs/source-ingestion.md`에 있습니다.
 
 ## 3. Edge Functions
 

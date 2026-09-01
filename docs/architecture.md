@@ -19,10 +19,12 @@ The `official-answer` Edge Function is the only AI answer path:
 1. Authenticate the user.
 2. Search the configured OpenAI Vector Store.
 3. Drop low-scoring results.
-4. Require every retained file ID to exist as an active `official_sources` record.
-5. Ask the model for a strict JSON answer using only those excerpts.
-6. Keep only citations whose file IDs were actually used.
-7. Return `no_official_source` when any evidence requirement fails.
+4. Require every retained file ID to exist as a human-approved, active, currently effective `official_sources` record.
+5. Supply only the last six sanitized chat turns as conversational context.
+6. Ask the model for a strict JSON answer using only those excerpts and disable response storage.
+7. Validate the model's used file IDs against the server-side allowlist.
+8. Keep only citations whose file IDs were actually used.
+9. Return `no_official_source` when any evidence requirement fails.
 
 The answer is informational and must not predict approval, invent exceptions, or replace advice from 1345 or the competent immigration office.
 

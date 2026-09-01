@@ -35,7 +35,7 @@ K-Student Hub는 정보의 성격을 분리합니다.
 | Today | 개인별 체류·학교생활 체크리스트 | 데모 데이터 구현 |
 | 커뮤니티 | 학교/전체 피드, 카테고리, 게시글 작성, 익명 게시 | 구현 |
 | 안전 | 개인정보 패턴 감지, 신고, 작성자 차단, AI Moderation | 구현 |
-| 공식정보 | 질문, 체크리스트, 공식 출처, 근거 없음 상태, 1345 안내 | 데모·RAG 서버 경계 구현 |
+| 공식정보 | 좌우 말풍선 채팅, 대화 문맥, 체크리스트, 공식 원문 링크, 근거 없음 상태, 1345 안내 | 데모·RAG 서버 경계 구현 |
 | 계정 | 로그아웃, 계정 및 데이터 삭제 | 구현 |
 | 백엔드 | PostgreSQL 스키마, RLS, seed, Edge Functions | 구현 |
 | 배포 | Expo/EAS 개발·미리보기·운영 프로필 | 설정 완료 |
@@ -74,10 +74,11 @@ flowchart LR
 1. 로그인 사용자를 확인합니다.
 2. OpenAI Vector Store에서 문서를 검색합니다.
 3. 관련도 기준보다 낮은 결과를 제거합니다.
-4. `official_sources`에 활성 상태로 등록된 파일만 허용합니다.
-5. 검색된 문서 내용만 사용하도록 구조화된 답변을 생성합니다.
-6. 실제 사용된 파일과 연결되는 출처만 사용자에게 표시합니다.
-7. 근거가 부족하면 `no_official_source`를 반환합니다.
+4. `official_sources`에서 사람이 승인했고 현재 유효한 활성 파일만 허용합니다.
+5. 최근 대화 문맥과 검색된 공식 문서만 사용해 구조화된 답변을 생성합니다.
+6. 모델이 실제 사용했다고 반환한 파일 ID를 서버에서 다시 검증합니다.
+7. 검증된 발행기관·문서명·검수일·버전·원문 링크만 사용자에게 표시합니다.
+8. 근거가 부족하면 `no_official_source`를 반환합니다.
 
 자세한 설계는 [아키텍처 문서](docs/architecture.md)를 참고하세요.
 
@@ -104,6 +105,8 @@ k-student-hub/
 │  ├─ migrations/               # DB 스키마와 RLS
 │  ├─ functions/                # RAG, moderation, 계정 삭제
 │  └─ seed.sql                  # 대학·공식 출처·일정 seed
+├─ config/official-sources.json # 검수 전 공식 출처 레지스트리
+├─ scripts/                     # 승인 문서 다운로드·색인 도구
 ├─ docs/                         # 운영·정책·배포 문서
 ├─ .env.example
 ├─ package.json
@@ -211,8 +214,9 @@ pnpm export:web
 
 1. Supabase 프로젝트를 생성합니다.
 2. `supabase/migrations/202608310001_initial_schema.sql`을 적용합니다.
-3. `supabase/seed.sql`을 적용합니다.
-4. Auth Redirect URL에 `kstudenthub://`를 등록합니다.
+3. `supabase/migrations/202609010001_official_info_upgrade.sql`을 적용합니다.
+4. `supabase/seed.sql`을 적용합니다.
+5. Auth Redirect URL에 `kstudenthub://`를 등록합니다.
 
 ### 2. 모바일 공개 환경변수
 
@@ -256,9 +260,17 @@ OpenAI 관련 값은 Supabase Function Secrets로 설정합니다.
 supabase secrets set OPENAI_API_KEY=YOUR_KEY
 supabase secrets set OPENAI_MODEL=gpt-5-mini
 supabase secrets set OPENAI_VECTOR_STORE_ID=YOUR_VECTOR_STORE_ID
+supabase secrets set RAG_MIN_SCORE=0.45
 ```
 
-공식 문서를 Vector Store에 올리는 것만으로는 답변에 사용되지 않습니다. 파일 ID를 `official_sources.openai_file_id`와 연결하고 사람의 검수를 거쳐 `active=true`로 승인해야 합니다. 자세한 절차는 [공식 출처 등록 안내](docs/source-ingestion.md)를 참고하세요.
+공식 문서를 Vector Store에 올리는 것만으로는 답변에 사용되지 않습니다. `config/official-sources.json`에서 현행성·재이용 조건을 사람이 검수한 후 `reviewStatus=approved`, `active=true`로 승인해야 하며, 파일 ID가 `official_sources.openai_file_id`에 연결되어야 합니다.
+
+```powershell
+pnpm.cmd sources:check
+pnpm.cmd sources:ingest
+```
+
+자세한 절차는 [공식 출처 등록 안내](docs/source-ingestion.md)를 참고하세요.
 
 ## iOS·Android 빌드 준비
 

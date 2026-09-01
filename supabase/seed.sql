@@ -23,7 +23,7 @@ values (
   'faq',
   array['D-2', 'D-4'],
   'ko',
-  true,
+  false,
   'Link metadata only; verify each document license before indexing',
   'seed-1'
 )

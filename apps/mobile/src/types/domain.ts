@@ -50,6 +50,8 @@ export type ChatCitation = {
   title: string;
   url: string;
   updatedAt: string;
+  issuer?: string;
+  documentType?: string;
 };
 
 export type ChatAnswer = {
@@ -57,4 +59,19 @@ export type ChatAnswer = {
   checklist: string[];
   citations: ChatCitation[];
   status: 'answered' | 'no_official_source';
+  notice?: string;
+  followUpQuestions?: string[];
+  model?: string;
+};
+
+export type OfficialChatTurn = {
+  role: 'user' | 'assistant';
+  text: string;
+};
+
+export type OfficialChatMessage = OfficialChatTurn & {
+  id: string;
+  createdAt: string;
+  answer?: ChatAnswer;
+  pending?: boolean;
 };
