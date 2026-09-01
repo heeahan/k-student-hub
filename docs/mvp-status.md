@@ -6,9 +6,9 @@
 - Passwordless email boundary, secure native session storage, and working demo sign-in
 - D-2/D-4 onboarding with university and preferred language
 - Personalized Today checklist
-- School/all community feed with categories, likes, bookmarks, and seeded content
-- Post creation with audience, anonymity, length limits, and client-side sensitive-data detection
-- Post detail with report and block entry points; blocked authors disappear from the feed
+- Searchable school/all/saved/my-post community feed with categories, latest/popular sorting, likes, bookmarks, and seeded content
+- Post and anonymous-comment creation with audience, length limits, client-side sensitive-data detection, and demo-device persistence
+- Post detail with comment list, post/comment deletion and reporting, author blocking, and production reaction/bookmark persistence
 - Official-info messenger UI with right/left bubbles, conversation context, source cards, checklist, no-source state, and 1345 escalation
 - Government-source registry plus human-approval, checksum, OpenAI upload, vector indexing, and Supabase metadata pipeline
 - Supabase migration, seed, RLS, account deletion, moderation, and RAG Edge Functions
@@ -25,7 +25,7 @@
 
 ## Next product increment
 
-1. Comments, reaction persistence, bookmark persistence, and push notification delivery
+1. Realtime comment subscriptions, pagination, and push notification delivery
 2. University email verification and a larger university directory
 3. Internal admin web console for report review and official-source freshness
 4. Scheduled task materialization from visa expiry/arrival/graduation anchors

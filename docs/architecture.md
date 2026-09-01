@@ -10,7 +10,7 @@ Demo mode is deliberately explicit. It keeps data on the device and makes no cla
 
 Supabase Auth provides passwordless email sign-in. PostgreSQL stores profiles, universities, posts, comments, reactions, reports, blocks, tasks, chat history, source metadata, and moderation audit events. RLS limits personal records to their owner and administrative records to users in `admin_roles`.
 
-The public feed never needs to read private profile rows. A post stores its already-approved public display name, or the literal anonymous label, while its real `author_id` remains available to RLS and moderators.
+The public feed never needs to read private profile rows. Posts and comments store an already-approved public display-name snapshot, or the literal anonymous label, while their real `author_id` remains available to RLS and moderators. University-only post visibility is enforced in the database policy as well as the mobile filter. Reactions are publicly countable; bookmarks, blocks, and reports remain owner-scoped.
 
 ## Official information RAG
 

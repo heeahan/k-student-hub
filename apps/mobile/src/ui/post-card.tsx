@@ -6,17 +6,29 @@ import { colors } from '@/ui/theme';
 
 const categoryLabel = { campus: '학교', visa: '비자', housing: '주거', work: '일자리', life: '생활', friends: '친구' };
 
+function relativeTime(createdAt: string) {
+  const elapsed = Math.max(0, Date.now() - new Date(createdAt).getTime());
+  const minutes = Math.floor(elapsed / 60_000);
+  if (minutes < 1) return '방금';
+  if (minutes < 60) return `${minutes}분 전`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}일 전`;
+  return new Date(createdAt).toLocaleDateString();
+}
+
 export function PostCard({ post, onLike, onBookmark }: { post: CommunityPost; onLike: () => void; onBookmark: () => void }) {
   return (
     <Pressable onPress={() => router.push({ pathname: '/post/[id]', params: { id: post.id } })} style={styles.card}>
-      <View style={styles.meta}><Text style={styles.category}>{categoryLabel[post.category]}</Text><Text style={styles.metaText}>{post.universityName ?? '전체'} · {post.authorName}</Text><Text style={styles.time}>최근</Text></View>
+      <View style={styles.meta}><Text style={styles.category}>{categoryLabel[post.category]}</Text><Text style={styles.metaText}>{post.universityName ?? '전체'} · {post.authorName}</Text><Text style={styles.time}>{relativeTime(post.createdAt)}</Text></View>
       <Text style={styles.title}>{post.title}</Text>
       <Text style={styles.body} numberOfLines={3}>{post.body}</Text>
       <View style={styles.footer}>
         <Pressable hitSlop={8} onPress={(event) => { event.stopPropagation(); onLike(); }}><Text style={[styles.action, post.isLiked && styles.active]}>♥ {post.likes}</Text></Pressable>
-        <Text style={styles.action}>● {post.comments}</Text>
+        <Text style={styles.action}>💬 {post.comments}</Text>
         <View style={styles.spacer} />
-        <Pressable hitSlop={8} onPress={(event) => { event.stopPropagation(); onBookmark(); }}><Text style={[styles.action, post.isBookmarked && styles.active]}>{post.isBookmarked ? '★' : '☆'}</Text></Pressable>
+        <Pressable hitSlop={8} onPress={(event) => { event.stopPropagation(); onBookmark(); }}><Text style={[styles.action, post.isBookmarked && styles.active]}>{post.isBookmarked ? '★ 저장됨' : '☆ 저장'}</Text></Pressable>
       </View>
     </Pressable>
   );

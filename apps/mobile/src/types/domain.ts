@@ -33,8 +33,20 @@ export type CommunityPost = {
   comments: number;
   createdAt: string;
   isAnonymous: boolean;
+  visibility?: 'public' | 'university';
   isLiked?: boolean;
   isBookmarked?: boolean;
+};
+
+export type CommunityComment = {
+  id: string;
+  postId: string;
+  authorId: string;
+  authorName: string;
+  body: string;
+  language: LanguageCode;
+  createdAt: string;
+  isAnonymous: boolean;
 };
 
 export type TimelineTask = {

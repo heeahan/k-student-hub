@@ -18,7 +18,11 @@ export default function NewPostScreen() {
   async function submit() {
     if (title.trim().length < 2 || body.trim().length < 2) return Alert.alert('제목과 내용을 입력해 주세요.');
     if (containsSensitiveInfo(`${title} ${body}`)) return Alert.alert('개인정보를 지워 주세요', '전화번호, 주민등록번호, 외국인등록번호 또는 계좌번호로 보이는 정보는 게시할 수 없습니다.');
-    try { setSubmitting(true); await createPost({ title, body, category, scope, isAnonymous: anonymous, language: profile?.language ?? 'en' }); router.back(); }
+    try {
+      setSubmitting(true);
+      const post = await createPost({ title, body, category, scope, isAnonymous: anonymous, language: profile?.language ?? 'en' });
+      router.replace({ pathname: '/post/[id]', params: { id: post.id } });
+    }
     catch (error) { Alert.alert('게시할 수 없어요', error instanceof Error ? error.message : '다시 시도해 주세요.'); }
     finally { setSubmitting(false); }
   }
