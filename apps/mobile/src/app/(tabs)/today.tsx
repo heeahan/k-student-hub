@@ -101,8 +101,8 @@ export default function TodayScreen() {
       ) : null}
 
       <View style={styles.tabs}>
-        <Pressable onPress={() => setView('open')} style={[styles.tab, view === 'open' && styles.tabSelected]}><Text style={[styles.tabText, view === 'open' && styles.tabTextSelected]}>할 일 {openCount}</Text></Pressable>
-        <Pressable onPress={() => setView('done')} style={[styles.tab, view === 'done' && styles.tabSelected]}><Text style={[styles.tabText, view === 'done' && styles.tabTextSelected]}>완료 {completedCount}</Text></Pressable>
+        <Pressable accessibilityRole="tab" accessibilityState={{ selected: view === 'open' }} onPress={() => setView('open')} style={[styles.tab, view === 'open' && styles.tabSelected]}><Text style={[styles.tabText, view === 'open' && styles.tabTextSelected]}>할 일 {openCount}</Text></Pressable>
+        <Pressable accessibilityRole="tab" accessibilityState={{ selected: view === 'done' }} onPress={() => setView('done')} style={[styles.tab, view === 'done' && styles.tabSelected]}><Text style={[styles.tabText, view === 'done' && styles.tabTextSelected]}>완료 {completedCount}</Text></Pressable>
       </View>
 
       {loading ? <ActivityIndicator color={colors.primary} /> : null}
@@ -153,9 +153,9 @@ function TaskCard({ task, onToggle, onSnooze, deletePending, onDelete, onCancelD
           {task.snoozedUntil ? <Text style={styles.snoozedBadge}>내일 다시 보기</Text> : null}
         </View>
         <View style={styles.taskActions}>
-          {!task.completed ? <Pressable onPress={onSnooze} style={styles.smallAction}><Text style={styles.smallActionText}>내일 보기</Text></Pressable> : null}
-          {deletePending ? <Pressable onPress={onCancelDelete} style={styles.smallAction}><Text style={styles.smallActionText}>취소</Text></Pressable> : null}
-          <Pressable onPress={onDelete} style={[styles.smallAction, deletePending && styles.deleteAction]}><Text style={styles.deleteText}>{deletePending ? '정말 삭제' : '삭제'}</Text></Pressable>
+          {!task.completed ? <Pressable accessibilityRole="button" accessibilityLabel={`${task.title} 내일 다시 보기`} onPress={onSnooze} style={styles.smallAction}><Text style={styles.smallActionText}>내일 보기</Text></Pressable> : null}
+          {deletePending ? <Pressable accessibilityRole="button" accessibilityLabel="삭제 취소" onPress={onCancelDelete} style={styles.smallAction}><Text style={styles.smallActionText}>취소</Text></Pressable> : null}
+          <Pressable accessibilityRole="button" accessibilityLabel={deletePending ? `${task.title} 영구 삭제 확인` : `${task.title} 삭제`} onPress={onDelete} style={[styles.smallAction, deletePending && styles.deleteAction]}><Text style={styles.deleteText}>{deletePending ? '정말 삭제' : '삭제'}</Text></Pressable>
         </View>
       </View>
     </Card>

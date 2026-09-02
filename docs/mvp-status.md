@@ -10,10 +10,14 @@
 - Post and anonymous-comment creation with audience, length limits, client-side sensitive-data detection, and demo-device persistence
 - Post detail with comment list, post/comment deletion and reporting, author blocking, and production reaction/bookmark persistence
 - Editable nickname, university, visa type, and answer language plus demo-content reset
+- In-app terms/privacy/community policy reader, versioned required consent, and re-consent gate
+- Persisted notification/privacy preferences with anonymous-post defaults
+- FAQ and support-request inbox with sensitive-data checks, demo persistence, and production RLS tables
+- Shared accessibility roles/states for core controls and an app-level recovery screen
 - Official-info messenger UI with right/left bubbles, conversation context, source cards, checklist, no-source state, and 1345 escalation
 - Government-source registry plus human-approval, checksum, OpenAI upload, vector indexing, and Supabase metadata pipeline
 - Supabase migration, seed, RLS, account deletion, moderation, and RAG Edge Functions
-- Privacy, community guideline, architecture, source ingestion, setup, and release documents
+- Terms, privacy, community guideline, customer-operations, architecture, source ingestion, setup, and release documents
 - TypeScript check, ESLint check, Expo web export, and mobile-viewport interaction QA
 
 ## Requires service credentials or owner decisions
@@ -22,15 +26,16 @@
 - Configure email templates, deep-link allowlist, and production redirect domains
 - Create an OpenAI Vector Store and ingest human-reviewed, reusable official documents
 - Replace example bundle/package IDs, icon artwork, support email, privacy URL, and store metadata
+- Finalize the operating entity, support owner/SLA, privacy retention schedule, and legally reviewed policy text
 - Enroll in Apple Developer and Google Play Console and run EAS device builds
 
 ## Next product increment
 
-1. Realtime comment subscriptions, pagination, and push notification delivery
+1. Realtime comment subscriptions, pagination, push delivery, and token lifecycle management
 2. University email verification and a larger university directory
 3. Internal admin web console for report review and official-source freshness
 4. Scheduled task materialization from visa expiry/arrival/graduation anchors
 5. Automated RLS integration tests against a local Supabase instance
-6. Accessibility, localization copy review, analytics/consent, crash reporting, and staged beta testing
+6. Screen-reader/dynamic-type device QA, localization copy review, analytics consent, crash reporting, and staged beta testing
 
 The current artifact is a working first vertical slice and a production-oriented foundation, not a claim that unreviewed legal or immigration material is ready for public use.

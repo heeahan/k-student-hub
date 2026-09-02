@@ -31,7 +31,7 @@ export default function WelcomeScreen() {
       </View>
       {isDemoMode ? <Text style={styles.demo}>DEMO MODE · 백엔드 설정 없이 모든 핵심 흐름을 체험할 수 있어요.</Text> : null}
       <Button onPress={() => router.push('/auth')}>시작하기</Button>
-      <Text style={styles.legal}>계속하면 이용약관과 개인정보 처리방침에 동의하게 됩니다.</Text>
+      <Text style={styles.legal}>가입 과정에서 이용약관·개인정보 처리방침·커뮤니티 운영정책을 읽고 명시적으로 동의합니다.</Text>
     </Screen>
   );
 }

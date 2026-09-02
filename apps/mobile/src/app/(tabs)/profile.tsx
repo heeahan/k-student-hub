@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import Constants from 'expo-constants';
 import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -85,7 +86,7 @@ export default function ProfileScreen() {
 
   return (
     <Screen>
-      <AppHeader eyebrow="MY K-STUDENT" title="내 정보" action={!editing ? <Pressable onPress={openEditor} style={styles.editButton}><Text style={styles.editButtonText}>편집</Text></Pressable> : null} />
+      <AppHeader eyebrow="MY K-STUDENT" title="내 정보" action={!editing ? <Pressable accessibilityRole="button" onPress={openEditor} style={styles.editButton}><Text style={styles.editButtonText}>편집</Text></Pressable> : null} />
 
       <Card style={styles.identity}>
         <View style={styles.avatar}><Text style={styles.avatarText}>{profile?.nickname.slice(0, 1).toUpperCase()}</Text></View>
@@ -133,10 +134,16 @@ export default function ProfileScreen() {
         <Text style={styles.policyBody}>혐오·괴롭힘·불법거래·개인정보 노출은 허용하지 않습니다. 게시글 상세에서 신고와 작성자 차단을 바로 할 수 있어요.</Text>
       </Card>
 
+      <Card style={styles.menuCard}>
+        <Text style={styles.cardTitle}>서비스 및 지원</Text>
+        <MenuRow label="서비스 설정" description="알림, 익명 기본값과 정책 동의 기록" onPress={() => router.push('/settings')} />
+        <MenuRow label="고객지원" description="FAQ, 1:1 문의와 처리 상태" onPress={() => router.push('/support')} last />
+      </Card>
+
       {isDemoMode ? (
         <View style={styles.dangerGroup}>
           <Button variant={resetArmed ? 'danger' : 'ghost'} onPress={() => void resetDemoData()}>{resetArmed ? '한 번 더 눌러 데모 데이터 초기화' : '데모 데이터 초기화'}</Button>
-          {resetArmed ? <Pressable onPress={() => setResetArmed(false)}><Text style={styles.cancelText}>초기화 취소</Text></Pressable> : null}
+          {resetArmed ? <Pressable accessibilityRole="button" onPress={() => setResetArmed(false)}><Text style={styles.cancelText}>초기화 취소</Text></Pressable> : null}
           <Text style={styles.helper}>계정과 프로필은 유지하고 커뮤니티·오늘 일정만 처음 상태로 되돌립니다.</Text>
         </View>
       ) : null}
@@ -156,13 +163,17 @@ export default function ProfileScreen() {
         </Card>
       )}
 
-      <Text style={styles.version}>K-Student Hub MVP · 1.1.0</Text>
+      <Text style={styles.version}>K-Student Hub · {Constants.expoConfig?.version ?? 'development'}</Text>
     </Screen>
   );
 }
 
 function Row({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
   return <View style={[styles.row, last && styles.rowLast]}><Text style={styles.rowLabel}>{label}</Text><Text style={styles.rowValue}>{value}</Text></View>;
+}
+
+function MenuRow({ label, description, onPress, last = false }: { label: string; description: string; onPress: () => void; last?: boolean }) {
+  return <Pressable accessibilityRole="button" onPress={onPress} style={[styles.menuRow, last && styles.rowLast]}><View style={styles.flex}><Text style={styles.menuLabel}>{label}</Text><Text style={styles.menuDescription}>{description}</Text></View><Text style={styles.menuArrow}>›</Text></Pressable>;
 }
 
 const styles = StyleSheet.create({
@@ -191,6 +202,11 @@ const styles = StyleSheet.create({
   localBody: { color: colors.muted, lineHeight: 20, fontSize: 13, marginTop: 7 },
   policy: { backgroundColor: '#FFF9EA', shadowOpacity: 0 },
   policyBody: { color: colors.muted, lineHeight: 20, fontSize: 13, marginTop: 7 },
+  menuCard: { paddingVertical: 8, gap: 0 },
+  menuRow: { minHeight: 67, flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#EEF1F5' },
+  menuLabel: { color: colors.ink, fontWeight: '900', fontSize: 14 },
+  menuDescription: { color: colors.muted, fontSize: 11, marginTop: 4 },
+  menuArrow: { color: colors.primary, fontWeight: '900', fontSize: 25 },
   dangerGroup: { gap: 9 },
   helper: { color: colors.muted, lineHeight: 18, fontSize: 12, textAlign: 'center' },
   cancelText: { color: colors.primary, fontWeight: '800', fontSize: 13, textAlign: 'center', paddingVertical: 4 },

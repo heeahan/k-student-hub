@@ -52,7 +52,7 @@ export default function CommunityScreen() {
         {query ? <Pressable accessibilityRole="button" accessibilityLabel="검색어 지우기" onPress={() => setQuery('')}><Text style={styles.clear}>×</Text></Pressable> : null}
       </View>
 
-      <View style={styles.scope}>{scopes.map((item) => <Pressable key={item.value} style={[styles.scopeItem, scope === item.value && styles.scopeActive]} onPress={() => setScope(item.value)}><Text style={[styles.scopeText, scope === item.value && styles.scopeTextActive]}>{item.label}</Text></Pressable>)}</View>
+      <View accessibilityRole="tablist" style={styles.scope}>{scopes.map((item) => <Pressable accessibilityRole="tab" accessibilityState={{ selected: scope === item.value }} key={item.value} style={[styles.scopeItem, scope === item.value && styles.scopeActive]} onPress={() => setScope(item.value)}><Text style={[styles.scopeText, scope === item.value && styles.scopeTextActive]}>{item.label}</Text></Pressable>)}</View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
         {categories.map((item) => <Chip key={item.value} label={item.label} selected={category === item.value} onPress={() => setCategory(item.value)} />)}
@@ -60,10 +60,10 @@ export default function CommunityScreen() {
 
       <View style={styles.resultRow}>
         <Text style={styles.resultCount}>{filtered.length}개의 이야기</Text>
-        <View style={styles.sort}><Pressable onPress={() => setSort('latest')}><Text style={[styles.sortText, sort === 'latest' && styles.sortActive]}>최신순</Text></Pressable><Text style={styles.divider}>·</Text><Pressable onPress={() => setSort('popular')}><Text style={[styles.sortText, sort === 'popular' && styles.sortActive]}>인기순</Text></Pressable></View>
+        <View style={styles.sort}><Pressable accessibilityRole="button" accessibilityState={{ selected: sort === 'latest' }} onPress={() => setSort('latest')}><Text style={[styles.sortText, sort === 'latest' && styles.sortActive]}>최신순</Text></Pressable><Text style={styles.divider}>·</Text><Pressable accessibilityRole="button" accessibilityState={{ selected: sort === 'popular' }} onPress={() => setSort('popular')}><Text style={[styles.sortText, sort === 'popular' && styles.sortActive]}>인기순</Text></Pressable></View>
       </View>
 
-      {error ? <View style={styles.error}><Text style={styles.errorText}>{error}</Text><Pressable onPress={() => runAction(refresh(), '다시 불러오기')}><Text style={styles.retry}>다시 시도</Text></Pressable></View> : null}
+      {error ? <View style={styles.error}><Text style={styles.errorText}>{error}</Text><Pressable accessibilityRole="button" onPress={() => runAction(refresh(), '다시 불러오기')}><Text style={styles.retry}>다시 시도</Text></Pressable></View> : null}
       {loading && !posts.length ? <View style={styles.loading}><ActivityIndicator color={colors.primary} /><Text style={styles.loadingText}>커뮤니티를 불러오는 중이에요</Text></View> : null}
       {filtered.length ? filtered.map((post) => <PostCard key={post.id} post={post} onLike={() => runAction(toggleLike(post.id), '좋아요')} onBookmark={() => runAction(toggleBookmark(post.id), '저장')} />) : !loading ? <EmptyState icon={scope === 'saved' ? '☆' : scope === 'mine' ? '✎' : '💬'} title={query ? '검색 결과가 없어요' : scope === 'saved' ? '저장한 글이 없어요' : scope === 'mine' ? '작성한 글이 없어요' : '아직 글이 없어요'} body={query ? '검색어 또는 카테고리를 바꿔 보세요.' : scope === 'saved' ? '다시 보고 싶은 글의 별표를 눌러 보세요.' : '첫 번째로 경험이나 질문을 나눠 보세요.'} /> : null}
     </Screen>

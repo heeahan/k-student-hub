@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { router } from 'expo-router';
 import {
   ActivityIndicator,
   Alert,
@@ -196,6 +197,11 @@ function MessageBubble({
 }
 
 function AnswerDetails({ answer }: { answer: ChatAnswer }) {
+  function reportAnswer() {
+    const sourceList = answer.citations.map((source) => `${source.issuer ?? '공식기관'}: ${source.title}`).join('\n');
+    const body = `검토가 필요한 AI 답변:\n\n${answer.answer}\n\n표시된 출처:\n${sourceList || '출처 없음'}`.slice(0, 2800);
+    router.push({ pathname: '/support', params: { category: 'official_info', subject: '공식정보 AI 답변 검토 요청', body } });
+  }
   return (
     <View style={styles.answerDetails}>
       {answer.checklist.length ? (
@@ -222,6 +228,7 @@ function AnswerDetails({ answer }: { answer: ChatAnswer }) {
       ) : null}
       {answer.notice ? <Text style={styles.notice}>{answer.notice}</Text> : null}
       {answer.model === 'demo-sample' ? <Text style={styles.demoLabel}>DEMO SAMPLE · LLM 미연결</Text> : null}
+      <Pressable accessibilityRole="button" onPress={reportAnswer} style={styles.reportAnswer}><Text style={styles.reportAnswerText}>답변이 잘못되었거나 오래됐나요? 검토 요청</Text><Text style={styles.reportAnswerArrow}>›</Text></Pressable>
     </View>
   );
 }
@@ -271,6 +278,9 @@ const styles = StyleSheet.create({
   external: { color: colors.primary, fontSize: 17 },
   notice: { color: colors.muted, backgroundColor: '#FFF8E8', borderRadius: 10, padding: 10, fontSize: 10, lineHeight: 15 },
   demoLabel: { color: colors.warning, fontSize: 9, fontWeight: '900', letterSpacing: 0.5 },
+  reportAnswer: { minHeight: 42, flexDirection: 'row', alignItems: 'center', gap: 8, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10 },
+  reportAnswerText: { flex: 1, color: colors.primaryDark, fontSize: 10, fontWeight: '800', lineHeight: 15 },
+  reportAnswerArrow: { color: colors.primary, fontSize: 18, fontWeight: '900' },
   suggestions: { gap: 6 },
   suggestion: { flexDirection: 'row', alignItems: 'center', gap: 7, backgroundColor: colors.surface, borderWidth: 1, borderColor: '#BDD1F9', paddingHorizontal: 12, paddingVertical: 9, borderRadius: 13 },
   suggestionText: { flex: 1, color: colors.primaryDark, fontSize: 11, fontWeight: '800' },

@@ -151,6 +151,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         storage.remove(STORAGE_KEYS.profile),
         storage.remove(STORAGE_KEYS.community),
         storage.remove(STORAGE_KEYS.tasks),
+        storage.remove(STORAGE_KEYS.service),
       ]);
     } else {
       const { error } = await getSupabase()!.functions.invoke('delete-account');

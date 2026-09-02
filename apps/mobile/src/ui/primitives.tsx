@@ -10,25 +10,26 @@ export function Screen({ children, scroll = true }: PropsWithChildren<{ scroll?:
 }
 
 export function AppHeader({ eyebrow, title, action }: { eyebrow?: string; title: string; action?: ReactNode }) {
-  return <View style={styles.header}><View style={styles.flex}>{eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}<Text style={styles.title}>{title}</Text></View>{action}</View>;
+  return <View style={styles.header}><View style={styles.flex}>{eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}<Text accessibilityRole="header" style={styles.title}>{title}</Text></View>{action}</View>;
 }
 
 export function Card({ children, style }: PropsWithChildren<{ style?: object }>) { return <View style={[styles.card, style]}>{children}</View>; }
 
 export function Button({ children, variant = 'primary', loading, disabled, ...props }: PressableProps & { children: ReactNode; variant?: 'primary' | 'secondary' | 'ghost' | 'danger'; loading?: boolean }) {
-  return <Pressable {...props} disabled={disabled || loading} style={({ pressed }) => [styles.button, styles[`button_${variant}`], pressed && styles.pressed, (disabled || loading) && styles.disabled]}>{loading ? <ActivityIndicator color={variant === 'primary' ? '#fff' : colors.primary} /> : <Text style={[styles.buttonText, styles[`buttonText_${variant}`]]}>{children}</Text>}</Pressable>;
+  const isDisabled = disabled || loading;
+  return <Pressable {...props} accessibilityRole={props.accessibilityRole ?? 'button'} accessibilityState={{ ...props.accessibilityState, disabled: isDisabled, busy: loading }} disabled={isDisabled} style={({ pressed }) => [styles.button, styles[`button_${variant}`], pressed && styles.pressed, isDisabled && styles.disabled]}>{loading ? <ActivityIndicator accessibilityLabel="처리 중" color={variant === 'primary' ? '#fff' : colors.primary} /> : <Text style={[styles.buttonText, styles[`buttonText_${variant}`]]}>{children}</Text>}</Pressable>;
 }
 
 export function Field({ label, hint, ...props }: TextInputProps & { label: string; hint?: string }) {
-  return <View style={styles.fieldWrap}><Text style={styles.label}>{label}</Text><TextInput placeholderTextColor="#94A3B8" {...props} style={[styles.input, props.multiline && styles.multiline, props.style]} />{hint ? <Text style={styles.hint}>{hint}</Text> : null}</View>;
+  return <View style={styles.fieldWrap}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={props.accessibilityLabel ?? label} accessibilityHint={props.accessibilityHint ?? hint} placeholderTextColor="#94A3B8" {...props} style={[styles.input, props.multiline && styles.multiline, props.style]} />{hint ? <Text style={styles.hint}>{hint}</Text> : null}</View>;
 }
 
 export function Chip({ label, selected, onPress }: { label: string; selected?: boolean; onPress?: () => void }) {
-  return <Pressable onPress={onPress} style={[styles.chip, selected && styles.chipSelected]}><Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityState={{ selected }} accessibilityLabel={label} onPress={onPress} style={[styles.chip, selected && styles.chipSelected]}><Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text></Pressable>;
 }
 
 export function EmptyState({ icon, title, body }: { icon: string; title: string; body: string }) {
-  return <View style={styles.empty}><Text style={styles.emptyIcon}>{icon}</Text><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyBody}>{body}</Text></View>;
+  return <View accessible accessibilityLabel={`${title}. ${body}`} style={styles.empty}><Text accessibilityElementsHidden style={styles.emptyIcon}>{icon}</Text><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyBody}>{body}</Text></View>;
 }
 
 const styles = StyleSheet.create({

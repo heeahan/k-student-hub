@@ -19,6 +19,33 @@ export type UserProfile = {
   onboardingComplete: boolean;
 };
 
+export type LegalDocumentKey = 'terms' | 'privacy' | 'community';
+
+export type LegalConsent = {
+  documentKey: LegalDocumentKey;
+  version: string;
+  agreedAt: string;
+};
+
+export type ServicePreferences = {
+  taskReminders: boolean;
+  communityReplies: boolean;
+  serviceNotices: boolean;
+  marketing: boolean;
+  defaultAnonymous: boolean;
+};
+
+export type SupportCategory = 'account' | 'community' | 'official_info' | 'privacy' | 'other';
+
+export type SupportRequest = {
+  id: string;
+  category: SupportCategory;
+  subject: string;
+  body: string;
+  status: 'received' | 'reviewing' | 'resolved' | 'closed';
+  createdAt: string;
+};
+
 export type CommunityPost = {
   id: string;
   authorId: string;

@@ -20,15 +20,15 @@ function relativeTime(createdAt: string) {
 
 export function PostCard({ post, onLike, onBookmark }: { post: CommunityPost; onLike: () => void; onBookmark: () => void }) {
   return (
-    <Pressable onPress={() => router.push({ pathname: '/post/[id]', params: { id: post.id } })} style={styles.card}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`${post.title}, ${post.authorName}, 댓글 ${post.comments}개`} onPress={() => router.push({ pathname: '/post/[id]', params: { id: post.id } })} style={styles.card}>
       <View style={styles.meta}><Text style={styles.category}>{categoryLabel[post.category]}</Text><Text style={styles.metaText}>{post.universityName ?? '전체'} · {post.authorName}</Text><Text style={styles.time}>{relativeTime(post.createdAt)}</Text></View>
       <Text style={styles.title}>{post.title}</Text>
       <Text style={styles.body} numberOfLines={3}>{post.body}</Text>
       <View style={styles.footer}>
-        <Pressable hitSlop={8} onPress={(event) => { event.stopPropagation(); onLike(); }}><Text style={[styles.action, post.isLiked && styles.active]}>♥ {post.likes}</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={post.isLiked ? '좋아요 취소' : '좋아요'} accessibilityState={{ selected: post.isLiked }} hitSlop={8} onPress={(event) => { event.stopPropagation(); onLike(); }}><Text style={[styles.action, post.isLiked && styles.active]}>♥ {post.likes}</Text></Pressable>
         <Text style={styles.action}>💬 {post.comments}</Text>
         <View style={styles.spacer} />
-        <Pressable hitSlop={8} onPress={(event) => { event.stopPropagation(); onBookmark(); }}><Text style={[styles.action, post.isBookmarked && styles.active]}>{post.isBookmarked ? '★ 저장됨' : '☆ 저장'}</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={post.isBookmarked ? '저장 취소' : '게시글 저장'} accessibilityState={{ selected: post.isBookmarked }} hitSlop={8} onPress={(event) => { event.stopPropagation(); onBookmark(); }}><Text style={[styles.action, post.isBookmarked && styles.active]}>{post.isBookmarked ? '★ 저장됨' : '☆ 저장'}</Text></Pressable>
       </View>
     </Pressable>
   );
