@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/providers/auth-provider';
 import { CommunityProvider } from '@/providers/community-provider';
+import { TaskProvider } from '@/providers/task-provider';
 import { colors } from '@/ui/theme';
 
 const queryClient = new QueryClient();
@@ -17,15 +18,17 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <CommunityProvider>
-            <StatusBar style="dark" />
-            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="onboarding" />
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="post/new" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="post/[id]" />
-            </Stack>
+            <TaskProvider>
+              <StatusBar style="dark" />
+              <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="onboarding" />
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="post/new" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="post/[id]" />
+              </Stack>
+            </TaskProvider>
           </CommunityProvider>
         </AuthProvider>
       </QueryClientProvider>

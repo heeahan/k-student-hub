@@ -5,9 +5,8 @@ import { UNIVERSITIES } from '@/data/seed';
 import { isDemoMode } from '@/lib/config';
 import { getSupabase } from '@/lib/supabase';
 import { storage } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
 import type { LanguageCode, UserProfile } from '@/types/domain';
-
-const PROFILE_KEY = 'kstudenthub.profile.v1';
 
 type OnboardingInput = {
   nickname: string;
@@ -21,6 +20,7 @@ type AuthContextValue = {
   profile: UserProfile | null;
   signIn: (email: string) => Promise<'signed-in' | 'link-sent'>;
   completeOnboarding: (input: OnboardingInput) => Promise<void>;
+  updateProfile: (input: OnboardingInput) => Promise<void>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<void>;
 };
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     let mounted = true;
     async function restore() {
       if (isDemoMode) {
-        const saved = await storage.get(PROFILE_KEY);
+        const saved = await storage.get(STORAGE_KEYS.profile);
         if (mounted && saved) setProfile(JSON.parse(saved) as UserProfile);
       } else {
         const supabase = getSupabase();
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         onboardingComplete: false,
       };
       setProfile(demo);
-      await storage.set(PROFILE_KEY, JSON.stringify(demo));
+      await storage.set(STORAGE_KEYS.profile, JSON.stringify(demo));
       return 'signed-in' as const;
     }
     const supabase = getSupabase()!;
@@ -113,6 +113,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const completeOnboarding = useCallback(async (input: OnboardingInput) => {
     const university = UNIVERSITIES.find((item) => item.id === input.universityId);
     if (!profile || !university) throw new Error('학교를 선택해 주세요.');
+    if (!input.nickname.trim()) throw new Error('닉네임을 입력해 주세요.');
     const updated: UserProfile = {
       ...profile,
       nickname: input.nickname.trim(),
@@ -123,7 +124,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       onboardingComplete: true,
     };
     if (isDemoMode) {
-      await storage.set(PROFILE_KEY, JSON.stringify(updated));
+      await storage.set(STORAGE_KEYS.profile, JSON.stringify(updated));
     } else {
       const { error } = await getSupabase()!.from('profiles').upsert({
         id: profile.id,
@@ -139,14 +140,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [profile]);
 
   const signOut = useCallback(async () => {
-    if (isDemoMode) await storage.remove(PROFILE_KEY);
+    if (isDemoMode) await storage.remove(STORAGE_KEYS.profile);
     else await getSupabase()!.auth.signOut();
     setProfile(null);
   }, []);
 
   const deleteAccount = useCallback(async () => {
     if (isDemoMode) {
-      await storage.remove(PROFILE_KEY);
+      await Promise.all([
+        storage.remove(STORAGE_KEYS.profile),
+        storage.remove(STORAGE_KEYS.community),
+        storage.remove(STORAGE_KEYS.tasks),
+      ]);
     } else {
       const { error } = await getSupabase()!.functions.invoke('delete-account');
       if (error) throw error;
@@ -156,7 +161,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const value = useMemo(
-    () => ({ loading, profile, signIn, completeOnboarding, signOut, deleteAccount }),
+    () => ({ loading, profile, signIn, completeOnboarding, updateProfile: completeOnboarding, signOut, deleteAccount }),
     [loading, profile, signIn, completeOnboarding, signOut, deleteAccount],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

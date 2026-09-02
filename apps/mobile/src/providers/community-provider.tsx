@@ -3,11 +3,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { INITIAL_COMMENTS, INITIAL_POSTS } from '@/data/seed';
 import { isDemoMode } from '@/lib/config';
 import { storage } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
 import { getSupabase } from '@/lib/supabase';
 import { useAuth } from '@/providers/auth-provider';
 import type { CommunityComment, CommunityPost, LanguageCode, PostCategory } from '@/types/domain';
-
-const DEMO_COMMUNITY_KEY = 'kstudenthub.community.v2';
 
 type NewPost = {
   title: string;
@@ -47,6 +46,7 @@ type CommunityContextValue = {
   blockAuthor: (authorId: string) => Promise<void>;
   toggleLike: (postId: string) => Promise<void>;
   toggleBookmark: (postId: string) => Promise<void>;
+  resetDemoCommunity: () => Promise<void>;
 };
 
 const CommunityContext = createContext<CommunityContextValue | null>(null);
@@ -112,7 +112,7 @@ export function CommunityProvider({ children }: PropsWithChildren) {
     let mounted = true;
     async function restoreDemoState() {
       try {
-        const saved = await storage.get(DEMO_COMMUNITY_KEY);
+        const saved = await storage.get(STORAGE_KEYS.community);
         if (!mounted || !saved) return;
         const parsed = JSON.parse(saved) as Partial<DemoCommunityState>;
         if (Array.isArray(parsed.posts)) setPosts(parsed.posts);
@@ -133,7 +133,7 @@ export function CommunityProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (!isDemoMode || !demoHydrated) return;
     const state: DemoCommunityState = { posts, commentsByPost, blockedAuthors, reportedPostIds, reportedCommentIds };
-    void storage.set(DEMO_COMMUNITY_KEY, JSON.stringify(state)).catch((persistError) => {
+    void storage.set(STORAGE_KEYS.community, JSON.stringify(state)).catch((persistError) => {
       console.warn('Unable to persist demo community state', persistError);
     });
   }, [posts, commentsByPost, blockedAuthors, reportedPostIds, reportedCommentIds, demoHydrated]);
@@ -388,6 +388,16 @@ export function CommunityProvider({ children }: PropsWithChildren) {
     }
   }, [posts, profile]);
 
+  const resetDemoCommunity = useCallback(async () => {
+    if (!isDemoMode) return;
+    setPosts(INITIAL_POSTS);
+    setCommentsByPost(INITIAL_COMMENTS);
+    setBlockedAuthors([]);
+    setReportedPostIds([]);
+    setReportedCommentIds([]);
+    await storage.remove(STORAGE_KEYS.community);
+  }, []);
+
   const visiblePosts = useMemo(
     () => posts
       .filter((post) => !blockedAuthors.includes(post.authorId))
@@ -419,7 +429,8 @@ export function CommunityProvider({ children }: PropsWithChildren) {
     blockAuthor,
     toggleLike,
     toggleBookmark,
-  }), [visiblePosts, visibleCommentsByPost, loading, loadingComments, error, reportedPostIds, reportedCommentIds, refresh, loadComments, createPost, deletePost, addComment, deleteComment, reportPost, reportComment, blockAuthor, toggleLike, toggleBookmark]);
+    resetDemoCommunity,
+  }), [visiblePosts, visibleCommentsByPost, loading, loadingComments, error, reportedPostIds, reportedCommentIds, refresh, loadComments, createPost, deletePost, addComment, deleteComment, reportPost, reportComment, blockAuthor, toggleLike, toggleBookmark, resetDemoCommunity]);
 
   return <CommunityContext.Provider value={value}>{children}</CommunityContext.Provider>;
 }

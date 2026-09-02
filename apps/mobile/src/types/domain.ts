@@ -56,6 +56,9 @@ export type TimelineTask = {
   dueLabel: string;
   tone: 'urgent' | 'soon' | 'normal';
   completed: boolean;
+  source: 'suggested' | 'custom';
+  dueOn: string | null;
+  snoozedUntil: string | null;
 };
 
 export type ChatCitation = {

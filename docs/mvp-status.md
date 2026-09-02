@@ -5,10 +5,11 @@
 - Expo React Native app for iOS, Android, and web preview
 - Passwordless email boundary, secure native session storage, and working demo sign-in
 - D-2/D-4 onboarding with university and preferred language
-- Personalized Today checklist
+- Personalized Today checklist with add, complete, snooze-until-tomorrow, delete, progress, and demo-device persistence
 - Searchable school/all/saved/my-post community feed with categories, latest/popular sorting, likes, bookmarks, and seeded content
 - Post and anonymous-comment creation with audience, length limits, client-side sensitive-data detection, and demo-device persistence
 - Post detail with comment list, post/comment deletion and reporting, author blocking, and production reaction/bookmark persistence
+- Editable nickname, university, visa type, and answer language plus demo-content reset
 - Official-info messenger UI with right/left bubbles, conversation context, source cards, checklist, no-source state, and 1345 escalation
 - Government-source registry plus human-approval, checksum, OpenAI upload, vector indexing, and Supabase metadata pipeline
 - Supabase migration, seed, RLS, account deletion, moderation, and RAG Edge Functions
